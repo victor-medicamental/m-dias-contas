@@ -113,6 +113,17 @@ html.mm-lock,html.mm-lock body{overflow:hidden!important}
 .mm-back-capa:hover{background:#0b3d68}
 @media(max-width:640px){.mm-cover-title{font-size:29px}.mm-cover-credit{gap:22px;padding:10px 16px}}
 </style>
+<style id="mm-padrao">
+/* ===== padrao mm: 1 barra de titulo / 3 largura ===== */
+header{background:#0b3d68;border-bottom:none;padding:16px 26px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+header h1{font-size:22px;font-weight:800;letter-spacing:.5px;color:#fff}
+header p{font-size:13px;color:rgba(255,255,255,.85);margin-top:6px}
+.wrap{max-width:1600px;width:100%;margin-left:auto;margin-right:auto;padding:22px 20px}
+</style>
+<style id="mm-coluna">
+/* --- coluna de cliente com mais espaco (mm) --- */
+td.l,th.l{max-width:420px}
+</style>
 </head>
 <body>
 <div id="mmCover">
@@ -468,5 +479,19 @@ render();
   var back=document.createElement('button');back.type='button';back.className='mm-back-capa';back.textContent='\u2302 Capa';
   back.addEventListener('click',show);document.body.appendChild(back);
 })();</script>
+<script>/* mm-svgfit */(function(){var F=1.15;
+function ig(s){if(s.closest('#mmCover'))return true;var c=s.getAttribute('class')||'';
+ if(/mm-cover-bg|bgart|capabg|cover-bg|cv-art/i.test(c))return true;
+ var p=s.parentElement;if(p){var pc=p.getAttribute('class')||'',pi=p.id||'';
+  if(/^(bg|capa|cover|cv-cover)$/i.test(pc)||/^(cover|capa)$/i.test(pi))return true;}
+ var pa=s.getAttribute('preserveAspectRatio');if(pa&&/slice/.test(pa))return true;return false;}
+function fit(){document.querySelectorAll('svg[viewBox]').forEach(function(s){if(ig(s))return;
+ var vb=(s.getAttribute('viewBox')||'').trim().split(/[\s,]+/),w=parseFloat(vb[2]);if(!(w>0))return;
+ s.style.maxWidth=Math.round(w*F)+'px';s.style.width='100%';s.style.display='block';
+ s.style.marginLeft='auto';s.style.marginRight='auto';});}
+var t=null;function ag(){clearTimeout(t);t=setTimeout(fit,60);}
+if(document.readyState!=='loading')ag();else document.addEventListener('DOMContentLoaded',ag);
+window.addEventListener('resize',ag);
+try{new MutationObserver(ag).observe(document.body,{childList:true,subtree:true});}catch(e){}})();</script>
 </body>
 </html>
