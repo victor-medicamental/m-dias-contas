@@ -363,14 +363,14 @@ function render(){
     options:{responsive:true,maintainAspectRatio:false,onClick:(e,el)=>{if(el.length)msCat.toggle(el[0].index===0?'H':'F');},
       plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>' '+c.label.split(' ')[0]+': '+money(c.raw)}}}}});}
   else{pie.data.labels=pLab;pie.data.datasets[0].data=pData;pie.update();}
-  const baseB=t.f+t.o+t.h+t.w,pb=v=>baseB?v/baseB*100:0,barPcts=[pb(t.f),pb(t.o),pb(t.h),pb(t.w)];
+  const baseB=t.f+t.o+t.h,pb=v=>baseB?v/baseB*100:0,barPcts=[pb(t.f),pb(t.o),pb(t.h)];
   if(!bar){bar=new Chart(document.getElementById('bar'),{type:'bar',plugins:[pctLabels],
-    data:{labels:['FARMA','OL','HPC','WEB'],datasets:[{data:[t.f,t.o,t.h,t.w],backgroundColor:[COL.f,COL.o,COL.h,COL.w]}]},
+    data:{labels:['FARMA','OL','HPC'],datasets:[{data:[t.f,t.o,t.h],backgroundColor:[COL.f,COL.o,COL.h]}]},
     options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:22}},
       onClick:(e,el)=>{if(!el.length)return;const i=el[0].index;if(i<3)msCat.toggle(i===2?'H':'F');},
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+money(c.raw)+'  ('+(c.chart.$pcts?c.chart.$pcts[c.dataIndex].toFixed(1):'0')+'%)'}}},
       scales:{y:{ticks:{callback:v=>'R$ '+INT.format(v)}}}}});}
-  else{bar.data.datasets[0].data=[t.f,t.o,t.h,t.w];}
+  else{bar.data.datasets[0].data=[t.f,t.o,t.h];}
   bar.$pcts=barPcts;bar.update();
 
   // monthly avg per active buyer
