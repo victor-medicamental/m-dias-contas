@@ -249,7 +249,7 @@ tfoot td.hpc{background:#cdeccf}
   </div>
 
   <div class="tablebox">
-    <div class="tbar"><h3>Detalhe por Cliente</h3><input id="search" placeholder="Buscar cliente..."></div>
+    <div class="tbar"><h3>Detalhe por Cliente</h3><div style="display:flex;gap:8px;align-items:center"><button class="btn" id="exportBtn" style="padding:7px 14px;font-size:12px;background:#15803d;border-color:#15803d">&#8681; Exportar Excel</button><input id="search" placeholder="Buscar cliente..."></div></div>
     <div style="padding:0 18px 8px;font-size:12px;color:#15803d;font-weight:600">As colunas <span style="background:#eafaef;padding:1px 6px;border:1px solid #cdeccf;border-radius:4px">HPC</span> (verde) j&#225; est&#227;o inclusas nos totais dos canais &#8212; n&#227;o somam ao Total Geral.</div>
     <div class="scroll"><table id="tbl"><thead><tr>
       <th class="l" data-k="c">Cliente <span class="arr"></span></th>
@@ -425,6 +425,22 @@ function renderVendors(rows){
 document.querySelectorAll('#tbl th').forEach(th=>th.addEventListener('click',()=>{const k=th.dataset.k;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=(k==='c'||k==='r'||k==='st')?1:-1;}render();}));
 document.querySelectorAll('#tblM th').forEach(th=>th.addEventListener('click',()=>{const k=th.dataset.k;if(sortKeyM===k)sortDirM*=-1;else{sortKeyM=k;sortDirM=(k==='m'||k==='cat')?1:-1;}render();}));
 search.addEventListener('input',render);searchM.addEventListener('input',render);
+function exportCSV(){
+  const rows=filtered();
+  const head=['Cliente','Marcas Distintas','TOT FARMA','TOT OL','TOT WEB','TOTAL GERAL','HPC FARMA','HPC OL','HPC WEB','HPC TOTAL','Status','Ramo'];
+  const num=v=>(Math.round((v||0)*100)/100).toFixed(2).replace('.',',');
+  const esc=s=>{s=String(s);return (s.indexOf(';')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0)?'"'+s.replace(/"/g,'""')+'"':s;};
+  const lines=[head.join(';')];
+  rows.forEach(r=>{const c=rowCh(r),d=chDisp(c),g=d[0]+d[1]+d[2],ht=c[3]+c[4]+c[5],b=rowBrandSet(r).size;
+    lines.push([esc(r.c),b,num(d[0]),num(d[1]),num(d[2]),num(g),num(c[3]),num(c[4]),num(c[5]),num(ht),(g>0?'Comprou':'Nao comprou'),esc(r.r)].join(';'));});
+  const csv='﻿'+lines.join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  const dt=new Date().toISOString().slice(0,10);
+  a.download='detalhe-por-cliente_'+dt+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+document.getElementById('exportBtn').addEventListener('click',exportCSV);
 document.getElementById('reset').addEventListener('click',()=>{msVend.clear();msRede.setItems(redeItems());msRede.clear();msCli.setItems(clientItems());msCli.clear();msMonth.clear();msMarca.clear();msHPC.clear();search.value='';searchM.value='';sortKey='n';sortDir=-1;sortKeyM='v';sortDirM=-1;render();});
 (function(){var c=document.getElementById('cover'),b=document.getElementById('coverBtn'),h=document.getElementById('homeBtn');if(b)b.addEventListener('click',function(){c.classList.add('hide');});if(h)h.addEventListener('click',function(){c.classList.remove('hide');});})();
 render();
